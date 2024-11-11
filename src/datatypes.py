@@ -1,9 +1,7 @@
 from typing import Tuple
-from dataclasses import dataclass
 
 type Gene = Tuple[int, int, int, int, int, int, int, int]
 
-@dataclass
 class GAInstance:
   __instance_counter = 0
   
@@ -12,6 +10,7 @@ class GAInstance:
     self.__id = self.__instance_counter
     self.__gen = gen
     self.__gene = gene
+    self.score = 0
   
   @property
   def id(self) -> int:
@@ -24,5 +23,13 @@ class GAInstance:
   @property
   def gene(self) -> Gene:
     return self.__gene
-  
+
+  @property
+  def score(self) -> int:
+    return self.__score
+
+  @score.setter
+  def score(self, score_points: int) -> None:
+    self.__score = score_points
+
   

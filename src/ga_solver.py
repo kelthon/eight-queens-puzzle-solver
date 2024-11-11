@@ -1,13 +1,10 @@
 from random import randint
 from typing import List
 from constants import CHESSBOARD_LAST_POSITION
+from datatypes import GAInstance
+from utils import create_instance_from_parents, create_random_genes, get_best_instances, get_parents, sort_by_score
 
 class GeneticAlgorithmSolver:
-    _max_iterations: int
-    _population_size: int
-    _population: List[List[int]]
-    _mutation_probability_rate: float
-
     def __init__(
         self,
         population_size: int,
@@ -17,47 +14,48 @@ class GeneticAlgorithmSolver:
         self._max_iterations = max_iterations
         self._population_size = population_size
         self._mutation_probability_rate = mutation_probability_rate
+        self._generations_counter = 0
         self._population = []
-    
-    @property
-    def population(self):
-        return self._population
 
-    def init(self):
+    def init(self) -> List[GAInstance]:
         '''creates a random population'''
         for i in range(self._population_size):
-            instance = [randint(0, 7) for j in range(8)]
+            gene = create_random_genes()
+            instance = GAInstance(i, gene)
             self._population.append(instance)
+
+        return self._population
     
-    def evaluate(self, instance):
+    def fitness(self, instance: GAInstance) -> int:
         '''fitness funtion to evaluate a instance'''
         pass
 
-    def select(self):
+    def select(self, number_of_instances: int = 5) -> GAInstance:
         '''selects the best instances of population'''
-        best_instances = self.population.sort()[:self._population_size]
+        self._population.sort(key=sort_by_score)
+        best_instances = self._population[:self._population_size]
         self._population = best_instances
 
-        return best_instances[0]
+        return best_instances[:number_of_instances]
 
-    def crossover(self):
+    def crossover(self) -> List[GAInstance]:
         '''reproduce instances using crossover to generate new instances'''
         children = []
         
-        for i in range(0, self._population_size, 2):
-            split_index = randint(0, CHESSBOARD_LAST_POSITION)
-            parents = self.population[i], self.population[i + 1]
-            child = [parents[0][:split_index] + parents[1][split_index + 1:]]
+        parents = get_parents(self._population)
+        
+        for parent in parents:
+            child = create_instance_from_parents(parent, self._generations_counter)
             children.append(child)
 
         return children
 
-    def mutate(self, children):
-        '''matates the instances to improve genetic variablility'''
+    def mutate(self, children: List[GAInstance]) -> List[GAInstance]:
+        '''mutates children instances to improve genetic variablility'''
         for child in children:
             for gene in child:
                 if randint(1, self._mutation_probability_rate) == self._mutation_probability_rate:
-                    gene = randint(0, CHESSBOARD_LAST_POSITION)
+                    child[child.index(gene)] = randint(0, CHESSBOARD_LAST_POSITION)
 
         return children
 
@@ -67,6 +65,8 @@ class GeneticAlgorithmSolver:
         self.init()
 
         for i in range(self._max_iterations):
+            self._generations_counter += 1
             children = self.crossover()
             children = self.mutate(children)
             top_one = self.select()
+            print(f'{i}° gen: {top_one}')
