@@ -1,4 +1,4 @@
-from ga_solver import GeneticAlgorithmSolver
+from solver import GeneticAlgorithmSolver
 
 a = [10, 10000, 0.2]
 
