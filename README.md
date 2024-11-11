@@ -8,4 +8,4 @@ This repository employs genetic algorithms to solve the eight queens puzzle, uti
 
 ## License
 
-    Distributed under the MIT License. See [LICENSE](/LICENSE) for more information.
+Distributed under the MIT License. See [LICENSE](https://opensource.org/licenses/MIT) for more information.
