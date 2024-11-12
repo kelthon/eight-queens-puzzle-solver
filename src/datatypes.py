@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Literal, Tuple
 
 type Gene = Tuple[int, int, int, int, int, int, int, int]
 
