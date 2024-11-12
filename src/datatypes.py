@@ -5,7 +5,7 @@ GeneValue = Literal[0, 1, 2, 3, 4, 5, 6, 7, 8]
 Gene = Tuple[GeneValue, GeneValue, GeneValue, GeneValue, GeneValue, GeneValue, GeneValue, GeneValue]
 
 class GAInstance:
-  __instance_counter = count(0)
+  __instance_counter = count(1)
   
   def __init__(self, gen: int, gene: Gene):
     self.__id = next(self.__instance_counter)

@@ -26,25 +26,20 @@ def get_mutation_tax(population: List[GAInstance]) -> List[int]:
     return tax
 
 def get_parents(population: List[GAInstance]) -> List[Tuple[GAInstance, GAInstance]]:
-    parents: List[Tuple[GAInstance, GAInstance]] = []
-    selected_parents = []
+    parents = []
+    selected_parents = set()
     mutation_tax = get_mutation_tax(population)
         
     while len(parents) < math.floor(len(population) / 2):
         couple = choices(population=population, weights=mutation_tax, k=2)
         
-        if couple[0] in selected_parents:
-            while couple[0] in selected_parents:
-                couple[0] = choices(population=population, weights=mutation_tax)[0]
-
-        if couple[1] in selected_parents:
-             while couple[1] in selected_parents:
-                couple[1] = choices(population=population, weights=mutation_tax)[0]
+        while couple[0] in selected_parents or couple[1] in selected_parents:
+            couple = choices(population=population, weights=mutation_tax, k=2)
                 
         parents.append((couple[0], couple[1]))
         parents.append((couple[1], couple[0]))
-        selected_parents.append(couple[0])
-        selected_parents.append(couple[1])
+        selected_parents.add(couple[0])
+        selected_parents.add(couple[1])
 
     return parents
 

@@ -55,13 +55,14 @@ class GeneticAlgorithmSolver:
             instance.score = score
         return score
 
-    def select(self, number_of_instances: int = 5) -> List[GAInstance]:
+    def select(self, number_of_instances: int | None = None) -> List[GAInstance]:
         '''selects the best instances of population'''
         self._population.sort(key=sort_by_score, reverse=True)
-        best_instances = self._population[:self._population_size]
-        self._population = best_instances
+        best_instances = self._population
+        self._population = best_instances[:self._population_size]
 
-        return best_instances[:number_of_instances]
+        
+        return best_instances[:number_of_instances] if isinstance(number_of_instances, int) else best_instances
 
     def crossover(self) -> List[GAInstance]:
         '''reproduce instances using crossover to generate new instances'''
@@ -92,22 +93,41 @@ class GeneticAlgorithmSolver:
     def fit(self):
         '''starts the fitness of all instances'''
         self.init()
+        parents = self.select(self._population_size)
+        
         log = open("log.txt", 'w+')
-
-        for i in range(self._max_iterations):
-            best_instances = self.select()
             
-            log.write(f'iteration {i}:\n')
-            for i in best_instances:
-                log.write(f'\tid: {i.id: 3}, {i.gen: 3}° gen, score: {i.score: 2.2f}, gene: {i.gene}\n')
-            log.write('\n')
-
+        for i in range(self._max_iterations):         
             self._generations_counter += 1
             
             children = self.crossover()
             children = self.mutate(children)
             
-            for instance in self._population:
+            for instance in children:
                 self.fitness(instance)
+
+            self._population.extend(children)
+
+            all_instances = self.select()
+            best_instances = self._population
+
+            log.write(f'iteration {i}:\n')
+
+            log.write(f'\tall instances:\n')
+            for i in all_instances:
+                log.write(f'\t\tid: {i.id: 3}, {i.gen: 3}° gen, score: {i.score: 2.2f}, gene: {i.gene}\n')
+
+            log.write(f'\tparents:\n')
+            for i in parents:
+                log.write(f'\t\tid: {i.id: 3}, {i.gen: 3}° gen, score: {i.score: 2.2f}, gene: {i.gene}\n')
+
+            log.write(f'\tchildren:\n')
+            for i in children:
+                log.write(f'\t\tid: {i.id: 3}, {i.gen: 3}° gen, score: {i.score: 2.2f}, gene: {i.gene}\n')
+            
+            log.write(f'\tbest intances:\n')
+            for i in best_instances:
+                log.write(f'\t\tid: {i.id: 3}, {i.gen: 3}° gen, score: {i.score: 2.2f}, gene: {i.gene}\n')
+            log.write('\n')
         
         log.close()
