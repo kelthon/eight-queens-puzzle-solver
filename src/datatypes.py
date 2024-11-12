@@ -1,13 +1,14 @@
 from typing import Literal, Tuple
+from itertools import count
 
-type Gene = Tuple[int, int, int, int, int, int, int, int]
+GeneValue = Literal[0, 1, 2, 3, 4, 5, 6, 7, 8]
+Gene = Tuple[GeneValue, GeneValue, GeneValue, GeneValue, GeneValue, GeneValue, GeneValue, GeneValue]
 
 class GAInstance:
-  __instance_counter = 0
+  __instance_counter = count(0)
   
   def __init__(self, gen: int, gene: Gene):
-    self.__instance_counter += 1
-    self.__id = self.__instance_counter
+    self.__id = next(self.__instance_counter)
     self.__gen = gen
     self.__gene = gene
     self.score = 0
@@ -31,5 +32,12 @@ class GAInstance:
   @score.setter
   def score(self, score_points: int) -> None:
     self.__score = score_points
+
+  def mutate_gene(self, gene_index: int, gene_value: GeneValue) -> None:
+    self.__gene[gene_index] = gene_value
+
+  def __repr__(self):
+    return f'{self.gene}'
+  
 
   

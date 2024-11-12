@@ -1,7 +1,7 @@
 from solver import GeneticAlgorithmSolver
 
-a = [10, 10000, 0.2]
+if __name__ == '__main__':
+  a = [10, 10000, 0.2]
 
-solver = GeneticAlgorithmSolver(a[0], a[1], a[2])
-
-solver.fit()
+  solver = GeneticAlgorithmSolver(a[0], a[1], a[2])
+  solver.fit()

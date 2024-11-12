@@ -1,59 +1,91 @@
 from random import randint, choices
 from typing import List, Tuple
-from constants import CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION, CHESSBOARD_SCORE_MODIFIER
+from constants import CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION
 from datatypes import GAInstance, Gene
+import math
 
-def sort_by_score(a: GAInstance, b: GAInstance):
-    return a.score - b.score
+def sort_by_score(instance: GAInstance):
+    return instance.score
 
 
 def create_random_genes() -> Gene:
     return [randint(0, 7) for i in range(8)]
 
 
-def extract_scores_from_list(population: List[GAInstance]) -> List[int]:
-    scores = []
-    population_len = len(population)
-
+def get_mutation_tax(population: List[GAInstance]) -> List[int]:
+    tax = []
+    total_score = 0
+    
     for instance in population:
-        choice_probability = instance.score / population_len
-        scores.append(choice_probability)
+        total_score += instance.score
+    
+    for instance in population:
+        choice_probability = instance.score / total_score
+        tax.append(choice_probability)
 
-    return scores
-
+    return tax
 
 def get_parents(population: List[GAInstance]) -> List[Tuple[GAInstance, GAInstance]]:
-    parents = []
-    select_list = population[:]
-    scores = extract_scores_from_list(population)
+    parents: List[Tuple[GAInstance, GAInstance]] = []
+    selected_parents = []
+    mutation_tax = get_mutation_tax(population)
         
-    while len(select_list) > 0:
-        couple = choices(population=select_list, weights=scores, k=2)
+    while len(parents) < math.floor(len(population) / 2):
+        couple = choices(population=population, weights=mutation_tax, k=2)
+        
+        if couple[0] in selected_parents:
+            while couple[0] in selected_parents:
+                couple[0] = choices(population=population, weights=mutation_tax)[0]
+
+        if couple[1] in selected_parents:
+             while couple[1] in selected_parents:
+                couple[1] = choices(population=population, weights=mutation_tax)[0]
+                
         parents.append((couple[0], couple[1]))
         parents.append((couple[1], couple[0]))
-        select_list.remove(couple[0], couple[1])
+        selected_parents.append(couple[0])
+        selected_parents.append(couple[1])
 
     return parents
 
 
 def create_instance_from_parents(parents: Tuple[GAInstance, GAInstance], gen: int) -> GAInstance:
-    split_index = randint(0, 7)
+    split_index = randint(1, 6)
     father, mother = parents
-    child = GAInstance(gen, father[:split_index] + mother[split_index + 1 : ])
+    child_gene = father.gene[:split_index] + mother.gene[split_index:]
+    child = GAInstance(gen, child_gene)
     return child
 
-def check_diagonal(row: int, col: int, direction: int):
-    score = 0
+def check_diagonal(instance: GAInstance, row: int, col: int, direction: int):
+    collisions = 0
     col_counter = col
     row_counter = row
-    increment = direction
+    incrementCol = 1
+    incrementRow = 1 * direction
     valid_positions = range(CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION)
-                    
+  
     while (row_counter in valid_positions and col_counter in valid_positions):
-        col_counter += increment
-        row_counter += increment
+        col_counter += incrementCol
+        row_counter += incrementRow
 
-        if instance.gene[col_counter] == row_counter:
-            score -= CHESSBOARD_SCORE_MODIFIER
+        if 0 <= col_counter < len(instance.gene) and instance.gene[col_counter] == row_counter:
+            collisions += 1
     
-    return score
+    return comb(2, collisions)
+
+
+def fact(number: int) -> int:
+    result = 1
+
+    if number < 0:
+        number *= -1
+    
+    for i in range(number, 1, -1):
+        result *= i
+    
+    return result
+
+
+def comb(number, choices) -> float:
+    return fact(choices) / (fact(number) * fact(choices - number))
+
