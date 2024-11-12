@@ -1,6 +1,6 @@
 from random import randint, choices
 from typing import List, Tuple
-from constants import CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION
+from constants import CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION, CHESSBOARD_LOG_FILE
 from datatypes import GAInstance, Gene
 import math
 
@@ -84,3 +84,21 @@ def fact(number: int) -> int:
 def comb(number, choices) -> float:
     return fact(choices) / (fact(number) * fact(choices - number))
 
+
+def clear_log():
+    with open(CHESSBOARD_LOG_FILE, 'w') as log:
+        log.close()
+
+def log(title: str, instances: List[GAInstance] | GAInstance | None = None):
+    with open(CHESSBOARD_LOG_FILE, 'a+') as logger:
+        log_instance = lambda instance: logger.write(f'\t\t\tid: {i.id: 3}, {i.gen: 3} gen, score: {i.score: 2.2f}, gene: {i.gene}\n')
+
+        logger.write(title)
+
+        if instances is not None:
+            if isinstance(instances, List):
+                for i in instances:
+                    log_instance(i)
+            else:
+                log_instance(instances)
+        logger.close()

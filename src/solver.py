@@ -2,7 +2,7 @@ from random import randint, random
 from typing import Callable, List
 from constants import CHESSBOARD_DOWN_DIAGONAL, CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION, CHESSBOARD_LENGHT, CHESSBOARD_MAX_SCORE, CHESSBOARD_SCORE_MODIFIER, CHESSBOARD_UP_DIAGONAL
 from datatypes import GAInstance
-from utils import comb, create_instance_from_parents, create_random_genes, get_parents, sort_by_score, check_diagonal
+from utils import comb, create_instance_from_parents, create_random_genes, get_parents, sort_by_score, check_diagonal, log
 
 class GeneticAlgorithmSolver:
     def __init__(
@@ -90,12 +90,10 @@ class GeneticAlgorithmSolver:
         return children
 
 
-    def fit(self):
+    def fit(self) -> GAInstance:
         '''starts the fitness of all instances'''
         self.init()
         parents = self.select(self._population_size)
-        
-        log = open("log.txt", 'w+')
             
         for i in range(self._max_iterations):         
             self._generations_counter += 1
@@ -111,23 +109,12 @@ class GeneticAlgorithmSolver:
             all_instances = self.select()
             best_instances = self._population
 
-            log.write(f'iteration {i}:\n')
-
-            log.write(f'\tall instances:\n')
-            for i in all_instances:
-                log.write(f'\t\tid: {i.id: 3}, {i.gen: 3}° gen, score: {i.score: 2.2f}, gene: {i.gene}\n')
-
-            log.write(f'\tparents:\n')
-            for i in parents:
-                log.write(f'\t\tid: {i.id: 3}, {i.gen: 3}° gen, score: {i.score: 2.2f}, gene: {i.gene}\n')
-
-            log.write(f'\tchildren:\n')
-            for i in children:
-                log.write(f'\t\tid: {i.id: 3}, {i.gen: 3}° gen, score: {i.score: 2.2f}, gene: {i.gene}\n')
-            
-            log.write(f'\tbest intances:\n')
-            for i in best_instances:
-                log.write(f'\t\tid: {i.id: 3}, {i.gen: 3}° gen, score: {i.score: 2.2f}, gene: {i.gene}\n')
-            log.write('\n')
+            log(f'\titeration {i}:\n')
+            log('\t\tall instances:\n', all_instances)
+            log('\t\tparents:\n', parents)
+            log('\t\tchildren:\n', children)
+            log('\t\tbest intances:\n', best_instances)
+            log('\n')
         
-        log.close()
+        return best_instances[0]
+    
