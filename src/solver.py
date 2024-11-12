@@ -1,5 +1,5 @@
 from random import randint, random
-from typing import List
+from typing import Callable, List
 from constants import CHESSBOARD_DOWN_DIAGONAL, CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION, CHESSBOARD_LENGHT, CHESSBOARD_MAX_SCORE, CHESSBOARD_SCORE_MODIFIER, CHESSBOARD_UP_DIAGONAL
 from datatypes import GAInstance
 from utils import comb, create_instance_from_parents, create_random_genes, get_parents, sort_by_score, check_diagonal
@@ -55,7 +55,7 @@ class GeneticAlgorithmSolver:
             instance.score = score
         return score
 
-    def select(self, number_of_instances: int = 5) -> GAInstance:
+    def select(self, number_of_instances: int = 5) -> List[GAInstance]:
         '''selects the best instances of population'''
         self._population.sort(key=sort_by_score, reverse=True)
         best_instances = self._population[:self._population_size]
@@ -95,9 +95,13 @@ class GeneticAlgorithmSolver:
         log = open("log.txt", 'w+')
 
         for i in range(self._max_iterations):
-            top_one = self.select()[0]
-            log.write(f'iteration: {i: 4} {top_one.gen: 4}° gen, id: {top_one.id}, score: {top_one.score}, gene: {top_one.gene}\n')
+            best_instances = self.select()
             
+            log.write(f'iteration {i}:\n')
+            for i in best_instances:
+                log.write(f'\tid: {i.id: 3}, {i.gen: 3}° gen, score: {i.score: 2.2f}, gene: {i.gene}\n')
+            log.write('\n')
+
             self._generations_counter += 1
             
             children = self.crossover()
