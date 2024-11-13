@@ -13,12 +13,12 @@ def print_instance(instance: Gene):
     ['6 |', '.', '.', '.', '.',  '.', '.', '.', '.', ''],
     ['7 |', '.', '.', '.', '.',  '.', '.', '.', '.', ''],
     ['  |', '-', '-', '-', '-',  '-', '-', '-', '-', ''],
-    ['  ', '0', '1', '2', '3', '4', '5', '6', '7'],
+    ['   ', '0', '1', '2', '3', '4', '5', '6', '7'],
   ]
 
   for i in range(len(instance.gene)):
     j = instance.gene[i]
-    table[j][i + (1 if i == 0 else 0)] = 'Q'
+    table[j][i + (1 if i != 8 else 0)] = 'Q'
   
   for row in table:
     for col in row:
