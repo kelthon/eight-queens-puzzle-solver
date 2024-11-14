@@ -1,5 +1,5 @@
 from solver import GeneticAlgorithmSolver
-from datatypes import Gene
+from datatypes import GAInstance, Gene
 from utils import clear_log, log, print_instance
 
 if __name__ == '__main__':
@@ -11,7 +11,7 @@ if __name__ == '__main__':
   results = [[] for _ in run_tests]
 
   clear_log()
-
+  
   for test in run_tests:
     for i in range(test['attempts']):
       ga = GeneticAlgorithmSolver(test['population_size'], test['max_iterations'], test['mutatio_prob_rate'])

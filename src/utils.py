@@ -1,6 +1,6 @@
 from random import randint, choices
 from typing import List, Tuple
-from constants import CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION, CHESSBOARD_LOG_FILE, CHESSBOARD_MAX_SCORE
+from constants import CHESSBOARD_LENGHT, CHESSBOARD_LOG_FILE, CHESSBOARD_MAX_SCORE
 from datatypes import GAInstance, Gene
 import math
 
@@ -55,12 +55,12 @@ def create_instance_from_parents(parents: Tuple[GAInstance, GAInstance], gen: in
     return child
 
 def check_diagonal(instance: GAInstance, row: int, col: int, direction: int):
-    collisions = 0
+    collisions = 1
     col_counter = col
     row_counter = row
     incrementCol = 1
     incrementRow = 1 * direction
-    valid_positions = range(CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION)
+    valid_positions = range(CHESSBOARD_LENGHT)
   
     while (row_counter in valid_positions and col_counter in valid_positions):
         col_counter += incrementCol

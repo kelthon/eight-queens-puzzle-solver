@@ -42,15 +42,8 @@ class GeneticAlgorithmSolver:
 
             # Checks if two or more queens are in same diagonals
             else:
-                if (col == CHESSBOARD_FISRT_POSITION and row == CHESSBOARD_FISRT_POSITION) or (row == CHESSBOARD_FISRT_POSITION):
-                    score -= check_diagonal(instance, row, col, CHESSBOARD_DOWN_DIAGONAL)
-
-                elif (col == CHESSBOARD_FISRT_POSITION and row == CHESSBOARD_LAST_POSITION) or (row == CHESSBOARD_LAST_POSITION):
-                    score -= check_diagonal(instance, row, col, CHESSBOARD_UP_DIAGONAL)
-    
-                else:
-                    score -= check_diagonal(instance, row, col, CHESSBOARD_UP_DIAGONAL)
-                    score -= check_diagonal(instance, row, col, CHESSBOARD_DOWN_DIAGONAL)
+                score -= check_diagonal(instance, row, col, CHESSBOARD_UP_DIAGONAL)
+                score -= check_diagonal(instance, row, col, CHESSBOARD_DOWN_DIAGONAL)
 
             rows_set.append(row)
         
