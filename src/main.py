@@ -4,9 +4,9 @@ from utils import clear_log, log, print_instance
 
 if __name__ == '__main__':
   run_tests = [
-    {'attempts': 1, 'population_size': 10, 'max_iterations': 100, 'mutatio_prob_rate': 0.2},
-    # {'attempts': 10, 'population_size': 100, 'max_iterations': 100, 'mutatio_prob_rate': 0.2},
-    # {'attempts': 10, 'population_size': 200, 'max_iterations': 100, 'mutatio_prob_rate': 0.2},
+    {'attempts': 10, 'population_size': 150, 'max_iterations': 100, 'mutatio_prob_rate': 0.2},
+    {'attempts': 10, 'population_size': 100, 'max_iterations': 100, 'mutatio_prob_rate': 0.2},
+    {'attempts': 10, 'population_size': 200, 'max_iterations': 100, 'mutatio_prob_rate': 0.2},
   ]
   results = [[] for _ in run_tests]
 
