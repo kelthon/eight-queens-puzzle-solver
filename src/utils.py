@@ -102,3 +102,27 @@ def log(title: str, instances: List[GAInstance] | GAInstance | None = None):
             else:
                 log_instance(instances)
         logger.close()
+
+def print_instance(title: str, instance: Gene):
+  table = [
+    ['0 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t {title}'],
+    ['1 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t id: {instance.id}'],
+    ['2 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t gen: {instance.gen}'],
+    ['3 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t score: {instance.score}'],
+    ['4 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t gene: {instance.gene}'],
+    ['5 |', '.', '.', '.', '.', '.', '.', '.', '.', ''],
+    ['6 |', '.', '.', '.', '.', '.', '.', '.', '.', ''],
+    ['7 |', '.', '.', '.', '.', '.', '.', '.', '.', '\t see log.txt for more info'],
+    ['  |', '-', '-', '-', '-', '-', '-', '-', '-', ''],
+    ['   ', '0', '1', '2', '3', '4', '5', '6', '7', ''],
+  ]
+
+  for i in range(len(instance.gene)):
+    j = instance.gene[i]
+    table[j][i + (1 if i != 8 else 0)] = 'Q'
+  
+  for row in table:
+    for col in row:
+      end_line = '--' if table.index(row) == 8 else '  '
+      print(f'{col}', end=end_line)
+    print('')
