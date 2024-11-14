@@ -1,6 +1,6 @@
 from random import randint, choices
 from typing import List, Tuple
-from constants import CHESSBOARD_LENGHT, CHESSBOARD_LOG_FILE, CHESSBOARD_MAX_SCORE
+from constants import CHESSBOARD_LENGHT, CHESSBOARD_LOG_FILE, CHESSBOARD_MAX_SCORE, CHESSBOARD_MIN_SCORE
 from datatypes import GAInstance, Gene
 import math
 
@@ -95,8 +95,8 @@ def comb(number, choices) -> float:
         except:
             return 0
 
-def score_percent(score: int) -> int:
-    return math.floor(100 * score / CHESSBOARD_MAX_SCORE)
+def normalization_min_max(value: int, min: int = CHESSBOARD_MIN_SCORE, max: int = CHESSBOARD_MAX_SCORE, to_percent: bool = True) -> int:
+    return math.floor((value  - min) / (max - min) * 100 if to_percent else 1)
 
 def clear_log():
     with open(CHESSBOARD_LOG_FILE, 'w') as log:
@@ -117,11 +117,12 @@ def log(title: str, instances: List[GAInstance] | GAInstance | None = None):
         logger.close()
 
 def print_instance(title: str, instance: Gene):
+  score_percent = normalization_min_max(instance.score)
   table = [
     ['0 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t {title}'],
     ['1 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t id: {instance.id}'],
     ['2 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t gen: {instance.gen}'],
-    ['3 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t score: {instance.score} ({score_percent(instance.score)}%)'],
+    ['3 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t score: {instance.score} ({score_percent}%)'],
     ['4 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t gene: {instance.gene}'],
     ['5 |', '.', '.', '.', '.', '.', '.', '.', '.', ''],
     ['6 |', '.', '.', '.', '.', '.', '.', '.', '.', ''],

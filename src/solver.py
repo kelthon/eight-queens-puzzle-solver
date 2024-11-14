@@ -41,9 +41,8 @@ class GeneticAlgorithmSolver:
                 score -= comb(2, rows_set.count(row) + 1)
 
             # Checks if two or more queens are in same diagonals
-            else:
-                score -= check_diagonal(instance, row, col, CHESSBOARD_UP_DIAGONAL)
-                score -= check_diagonal(instance, row, col, CHESSBOARD_DOWN_DIAGONAL)
+            score -= check_diagonal(instance, row, col, CHESSBOARD_UP_DIAGONAL)
+            score -= check_diagonal(instance, row, col, CHESSBOARD_DOWN_DIAGONAL)
 
             rows_set.append(row)
         
