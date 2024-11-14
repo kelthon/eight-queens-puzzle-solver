@@ -1,6 +1,6 @@
 from random import randint, random
-from typing import Callable, List
-from constants import CHESSBOARD_DOWN_DIAGONAL, CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION, CHESSBOARD_LENGHT, CHESSBOARD_MAX_SCORE, CHESSBOARD_SCORE_MODIFIER, CHESSBOARD_UP_DIAGONAL
+from typing import List
+from constants import CHESSBOARD_DOWN_DIAGONAL, CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION, CHESSBOARD_LENGHT, CHESSBOARD_MAX_SCORE, CHESSBOARD_UP_DIAGONAL
 from datatypes import GAInstance
 from utils import comb, create_instance_from_parents, create_random_genes, get_parents, sort_by_score, check_diagonal, log
 
@@ -19,6 +19,7 @@ class GeneticAlgorithmSolver:
 
     def init(self) -> List[GAInstance]:
         '''creates a random population'''
+
         for i in range(self._population_size):
             gene = create_random_genes()
             instance = GAInstance(1, gene)
@@ -52,7 +53,8 @@ class GeneticAlgorithmSolver:
                     score -= check_diagonal(instance, row, col, CHESSBOARD_DOWN_DIAGONAL)
 
             rows_set.append(row)
-            instance.score = score
+        
+        instance.score = score
         return score
 
     def select(self, number_of_instances: int | None = None) -> List[GAInstance]:
@@ -67,9 +69,6 @@ class GeneticAlgorithmSolver:
     def crossover(self) -> List[GAInstance]:
         '''reproduce instances using crossover to generate new instances'''
         children = []
-
-        if len(self._population) % 2 != 0:
-            children.append(self._population.pop())
 
         parents = get_parents(self._population)
         
@@ -106,8 +105,9 @@ class GeneticAlgorithmSolver:
 
             self._population.extend(children)
 
-            all_instances = self.select()
-            best_instances = self._population
+            all_instances = self._population
+
+            best_instances = self.select(self._population_size)
 
             log(f'\titeration {i}:\n')
             log('\t\tall instances:\n', all_instances)

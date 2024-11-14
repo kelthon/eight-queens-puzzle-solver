@@ -1,6 +1,6 @@
 from random import randint, choices
 from typing import List, Tuple
-from constants import CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION, CHESSBOARD_LOG_FILE
+from constants import CHESSBOARD_FISRT_POSITION, CHESSBOARD_LAST_POSITION, CHESSBOARD_LOG_FILE, CHESSBOARD_MAX_SCORE
 from datatypes import GAInstance, Gene
 import math
 
@@ -30,7 +30,10 @@ def get_parents(population: List[GAInstance]) -> List[Tuple[GAInstance, GAInstan
     selected_parents = set()
     mutation_tax = get_mutation_tax(population)
         
-    while len(parents) < math.floor(len(population) / 2):
+    if len(population) % 2 != 0:
+        population.append(GAInstance(1, choices(population=population, weights=mutation_tax, k=1)[0].gene))
+
+    while len(parents) < len(population):
         couple = choices(population=population, weights=mutation_tax, k=2)
         
         while couple[0] in selected_parents or couple[1] in selected_parents:
@@ -45,7 +48,7 @@ def get_parents(population: List[GAInstance]) -> List[Tuple[GAInstance, GAInstan
 
 
 def create_instance_from_parents(parents: Tuple[GAInstance, GAInstance], gen: int) -> GAInstance:
-    split_index = randint(1, 6)
+    split_index = randint(0, 7)
     father, mother = parents
     child_gene = father.gene[:split_index] + mother.gene[split_index:]
     child = GAInstance(gen, child_gene)
@@ -72,8 +75,8 @@ def check_diagonal(instance: GAInstance, row: int, col: int, direction: int):
 def fact(number: int) -> int:
     result = 1
 
-    if number < 0:
-        number *= -1
+    if number <= 0:
+        return 0
     
     for i in range(number, 1, -1):
         result *= i
@@ -82,8 +85,18 @@ def fact(number: int) -> int:
 
 
 def comb(number, choices) -> float:
-    return fact(choices) / (fact(number) * fact(choices - number))
+    if number == 0 or choices == 0:
+        return 0
+    elif number == choices:
+        return 1
+    else:
+        try:
+            return fact(choices) / (fact(number) * fact(choices - number))
+        except:
+            return 0
 
+def score_percent(score: int) -> int:
+    return math.floor(100 * score / CHESSBOARD_MAX_SCORE)
 
 def clear_log():
     with open(CHESSBOARD_LOG_FILE, 'w') as log:
@@ -108,7 +121,7 @@ def print_instance(title: str, instance: Gene):
     ['0 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t {title}'],
     ['1 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t id: {instance.id}'],
     ['2 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t gen: {instance.gen}'],
-    ['3 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t score: {instance.score}'],
+    ['3 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t score: {instance.score} ({score_percent(instance.score)}%)'],
     ['4 |', '.', '.', '.', '.', '.', '.', '.', '.', f'\t gene: {instance.gene}'],
     ['5 |', '.', '.', '.', '.', '.', '.', '.', '.', ''],
     ['6 |', '.', '.', '.', '.', '.', '.', '.', '.', ''],
