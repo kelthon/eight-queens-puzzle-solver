@@ -1,7 +1,7 @@
 from constants import CHESSBOARD_MAX_SCORE
 from solver import GeneticAlgorithmSolver
 from utils import clear_log, log, print_instance
-
+# teste para as populações de tamanho diferentes
 if __name__ == '__main__':
   run_tests = [
     {'attempts': 10, 'population_size': 150, 'max_iterations': 100, 'mutatio_prob_rate': 0.2},
